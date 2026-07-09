@@ -1,36 +1,142 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mini Issue Tracking System
 
-## Getting Started
+A lightweight issue tracker built with Next.js, TypeScript, and MongoDB. Track tasks, manage priorities, and monitor progress through a clean dashboard.
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+This application allows users to:
+
+- Register and authenticate securely with JWT
+- Create, view, update, and delete issues
+- Search, filter, and sort issues by status, priority, and text
+- View dashboard metrics (total, open, in progress, closed, overdue)
+- Responsive design works on mobile, tablet, and desktop
+
+## Tech Stack
+
+| Layer      | Technology                                        |
+| ---------- | ------------------------------------------------- |
+| Frontend   | Next.js 16 (App Router), TypeScript, Tailwind CSS |
+| Backend    | Next.js Route Handlers (`/app/api/**`)            |
+| Database   | MongoDB with Mongoose ODM                         |
+| Auth       | JWT (jsonwebtoken) + bcrypt (httpOnly cookies)    |
+| Validation | Zod (server + client-side)                        |
+| Testing    | Vitest (18 unit tests)                            |
+
+## Setup
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repo-url>
+   cd issue-tracker
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables**
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Fill in your MongoDB Atlas connection string and a JWT secret.
+
+4. **Run the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000).
+
+5. **Run tests**
+   ```bash
+   npm test
+   ```
+
+## Environment Variables
+
+| Variable         | Description                          |
+| ---------------- | ------------------------------------ |
+| `MONGODB_URI`    | MongoDB Atlas connection string      |
+| `JWT_SECRET`     | Secret key for signing JWT tokens    |
+| `JWT_EXPIRES_IN` | JWT expiry duration (default: `24h`) |
+
+## API Documentation
+
+| Method | Route                    | Auth | Description                                                                    |
+| ------ | ------------------------ | ---- | ------------------------------------------------------------------------------ |
+| POST   | `/api/auth/register`     | —    | Register new user, returns JWT in httpOnly cookie                              |
+| POST   | `/api/auth/login`        | —    | Login, returns JWT in httpOnly cookie                                          |
+| POST   | `/api/auth/logout`       | —    | Clears auth cookie                                                             |
+| GET    | `/api/issues`            | ✅   | List issues (`?search=&status=&priority=&sort=newest\|oldest&page=1&limit=10`) |
+| GET    | `/api/issues/:id`        | ✅   | Get single issue                                                               |
+| POST   | `/api/issues`            | ✅   | Create issue (Zod-validated body)                                              |
+| PUT    | `/api/issues/:id`        | ✅   | Update issue (partial update allowed)                                          |
+| DELETE | `/api/issues/:id`        | ✅   | Delete issue                                                                   |
+| GET    | `/api/dashboard/metrics` | ✅   | Dashboard metrics (single $facet aggregation)                                  |
+
+### Response Envelope
+
+```json
+// Success
+{ "success": true, "data": { ... }, "meta": { "page": 1, "total": 42, "limit": 10, "totalPages": 5 } }
+
+// Error
+{ "success": false, "error": { "code": "VALIDATION_ERROR", "message": "..." } }
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Architecture Decisions
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Why a Next.js Monolith?
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+A modular monolith reduces deployment risk and lets development time focus on correctness instead of infrastructure. The internal layering (routes → services → data access) means it can be split into separate services later with minimal rework.
 
-## Learn More
+### Layered Architecture
 
-To learn more about Next.js, take a look at the following resources:
+```
+Request → Route Handler (HTTP only)
+        → Middleware (JWT auth check)
+        → Service Layer (business logic)
+        → Data Access Layer (Mongoose models)
+        → MongoDB
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Each layer has exactly one responsibility. Route handlers parse requests and format responses. Services contain business rules. Data access is isolated in Mongoose models.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Why These Indexes?
 
-## Deploy on Vercel
+- **`{ status: 1, priority: 1 }`** — compound index for the two most common filter combinations
+- **Text index on `title`** — supports search without a regex table scan
+- **`dueDate: 1`** — the Overdue metric needs `dueDate < now AND status != closed`
+- **`createdAt: -1`** — supports both sort directions cheaply
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Why JWT in httpOnly Cookie?
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+httpOnly cookies mitigate XSS token theft compared to localStorage. Same-site cookie configuration provides CSRF protection.
+
+## Assumptions
+
+- `assignee` is a free-text field rather than a full user-lookup, to fit the 4-day scope
+- MongoDB Atlas is used for database hosting
+- Vercel is used for application deployment
+
+## Trade-offs
+
+- Skipped real-time updates (WebSockets) in favor of hardening core CRUD + auth given the time budget
+- Skipped email notifications and file attachments — these don't map to scored rubric categories
+- Used a single deployment unit (Next.js monolith) instead of separate frontend/backend repos
+
+## Future Improvements
+
+- Redis caching on dashboard metrics
+- Role-based permissions (owner/assignee-based edit/delete)
+- Real-time updates via WebSockets
+- Full integration test suite
+- CI/CD pipeline
+- Split into separate API service if traffic demands it

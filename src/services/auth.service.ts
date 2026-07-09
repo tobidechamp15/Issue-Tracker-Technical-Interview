@@ -1,14 +1,35 @@
-meimport bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 import { connectDB } from "@/lib/db";
-import User, { IUser } from "@/models/User";
+import User from "@/models/User";
 
 const SALT_ROUNDS = 12;
+
+export interface UserResponse {
+  _id: string;
+  name: string;
+  email: string;
+  createdAt: Date;
+}
+
+function toUserResponse(user: {
+  _id: { toString(): string };
+  name: string;
+  email: string;
+  createdAt: Date;
+}): UserResponse {
+  return {
+    _id: user._id.toString(),
+    name: user.name,
+    email: user.email,
+    createdAt: user.createdAt,
+  };
+}
 
 export async function registerUser(
   name: string,
   email: string,
   password: string,
-): Promise<{ user: Omit<IUser, "passwordHash"> }> {
+): Promise<{ user: UserResponse }> {
   await connectDB();
 
   // Check for existing user
@@ -25,17 +46,13 @@ export async function registerUser(
     passwordHash,
   });
 
-  // Return user without passwordHash (select: false already handles this,
-  // but we explicitly omit it for type safety)
-  const { passwordHash: _, ...userWithoutPassword } = user.toObject();
-
-  return { user: userWithoutPassword as Omit<IUser, "passwordHash"> };
+  return { user: toUserResponse(user) };
 }
 
 export async function loginUser(
   email: string,
   password: string,
-): Promise<{ user: Omit<IUser, "passwordHash"> }> {
+): Promise<{ user: UserResponse }> {
   await connectDB();
 
   // Explicitly select passwordHash since it's excluded by default
@@ -49,9 +66,7 @@ export async function loginUser(
     throw new InvalidCredentialsError();
   }
 
-  const { passwordHash: _, ...userWithoutPassword } = user.toObject();
-
-  return { user: userWithoutPassword as Omit<IUser, "passwordHash"> };
+  return { user: toUserResponse(user) };
 }
 
 // Custom error classes for predictable error handling

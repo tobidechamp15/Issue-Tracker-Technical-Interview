@@ -141,10 +141,8 @@ describe("issue.service", () => {
         mockUser,
       );
 
-      const findArg = vi.mocked(Issue.find).mock.calls[0][0] as Record<
-        string,
-        unknown
-      >;
+      const findArg = vi.mocked(Issue.find).mock
+        .calls[0]![0] as unknown as Record<string, unknown>;
       expect(findArg.status).toBe("open");
       expect(findArg.priority).toBe("high");
     });
@@ -165,10 +163,8 @@ describe("issue.service", () => {
         mockUser,
       );
 
-      const findArg = vi.mocked(Issue.find).mock.calls[0][0] as Record<
-        string,
-        unknown
-      >;
+      const findArg = vi.mocked(Issue.find).mock
+        .calls[0]![0] as unknown as Record<string, unknown>;
       expect(findArg.$text).toEqual({ $search: "bug fix" });
     });
 

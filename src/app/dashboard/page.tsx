@@ -35,8 +35,8 @@ export default function DashboardPage() {
 
   if (error) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
           {error}
         </div>
       </div>
@@ -44,12 +44,12 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <h1 className="text-base font-bold text-gray-900">Dashboard</h1>
         <Link
           href="/issues/new"
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
+          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
         >
           + New Issue
         </Link>

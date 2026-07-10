@@ -11,6 +11,9 @@ interface FilterBarProps {
   onSortChange: (value: string) => void;
 }
 
+const baseSelect =
+  "px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors hover:border-gray-400";
+
 export default function FilterBar({
   search,
   status,
@@ -22,8 +25,8 @@ export default function FilterBar({
   onSortChange,
 }: FilterBarProps) {
   return (
-    <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 space-y-3 sm:space-y-0 sm:flex sm:gap-4 sm:items-end flex-wrap">
-      <div className="flex-1 min-w-[200px]">
+    <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm flex flex-wrap gap-4 items-end">
+      <div className="flex-1 min-w-[180px]">
         <label className="block text-xs font-medium text-gray-500 mb-1">
           Search
         </label>
@@ -32,7 +35,7 @@ export default function FilterBar({
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search issues..."
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors hover:border-gray-400"
         />
       </div>
 
@@ -43,7 +46,7 @@ export default function FilterBar({
         <select
           value={status}
           onChange={(e) => onStatusChange(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          className={baseSelect}
         >
           <option value="">All</option>
           <option value="open">Open</option>
@@ -59,7 +62,7 @@ export default function FilterBar({
         <select
           value={priority}
           onChange={(e) => onPriorityChange(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          className={baseSelect}
         >
           <option value="">All</option>
           <option value="low">Low</option>
@@ -75,7 +78,7 @@ export default function FilterBar({
         <select
           value={sort}
           onChange={(e) => onSortChange(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          className={baseSelect}
         >
           <option value="newest">Newest</option>
           <option value="oldest">Oldest</option>

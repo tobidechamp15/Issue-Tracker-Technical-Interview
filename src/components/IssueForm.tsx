@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 
 export interface IssueFormData {
   title: string;
@@ -16,7 +16,7 @@ interface IssueFormProps {
   onSubmit: (data: IssueFormData) => Promise<void>;
   submitLabel: string;
   loading?: boolean;
-  errors?: Record<string, string>;
+  onCancel?: () => void;
 }
 
 const defaultData: IssueFormData = {
@@ -33,66 +33,103 @@ export default function IssueForm({
   onSubmit,
   submitLabel,
   loading,
-  errors: externalErrors,
+  onCancel,
 }: IssueFormProps) {
   const [form, setForm] = useState<IssueFormData>({
     ...defaultData,
     ...initialData,
   });
-  const [internalErrors, setInternalErrors] = useState<Record<string, string>>(
-    {},
-  );
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-  const errors = externalErrors || internalErrors;
-
-  function updateField(field: keyof IssueFormData, value: string) {
-    setForm((prev) => ({ ...prev, [field]: value }));
-    setInternalErrors((prev) => {
-      const next = { ...prev };
-      delete next[field];
-      return next;
-    });
+  function validate(field: string, value: string): string {
+    switch (field) {
+      case "title":
+        if (!value.trim()) return "Title is required";
+        if (value.trim().length < 3)
+          return "Title must be at least 3 characters";
+        return "";
+      default:
+        return "";
+    }
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleChange(field: keyof IssueFormData) {
+    return (
+      e: ChangeEvent<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >,
+    ) => {
+      const value = e.target.value;
+      setForm((prev) => ({ ...prev, [field]: value }));
+      if (touched[field]) {
+        const err = validate(field, value);
+        setErrors((prev) => {
+          const next = { ...prev };
+          if (err) next[field] = err;
+          else delete next[field];
+          return next;
+        });
+      }
+    };
+  }
+
+  function handleBlur(field: keyof IssueFormData) {
+    return () => {
+      setTouched((prev) => ({ ...prev, [field]: true }));
+      const err = validate(field, form[field]);
+      setErrors((prev) => {
+        const next = { ...prev };
+        if (err) next[field] = err;
+        else delete next[field];
+        return next;
+      });
+    };
+  }
+
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setInternalErrors({});
 
-    // Basic client-side validation
-    const errs: Record<string, string> = {};
-    if (!form.title.trim() || form.title.trim().length < 3) {
-      errs.title = "Title must be at least 3 characters";
-    }
-    if (Object.keys(errs).length > 0) {
-      setInternalErrors(errs);
-      return;
-    }
+    // Validate all fields
+    const newErrors: Record<string, string> = {};
+    const titleErr = validate("title", form.title);
+    if (titleErr) newErrors.title = titleErr;
+    setErrors(newErrors);
+    setTouched({ title: true });
 
+    if (Object.keys(newErrors).length > 0) return;
     await onSubmit(form);
   }
 
+  const inputClass =
+    "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors";
+  const errorClass = "border-red-300 focus:ring-red-500 focus:border-red-500";
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      {/* Title */}
       <div>
         <label
           htmlFor="title"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
-          Title *
+          Title <span className="text-red-500">*</span>
         </label>
         <input
           id="title"
           type="text"
           value={form.title}
-          onChange={(e) => updateField("title", e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-          placeholder="Issue title"
+          onChange={handleChange("title")}
+          onBlur={handleBlur("title")}
+          className={`${inputClass} ${errors.title ? errorClass : ""}`}
+          placeholder="Brief summary of the issue"
         />
         {errors.title && (
-          <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+          <p className="text-red-500 text-xs mt-1">{errors.title}</p>
         )}
       </div>
 
+      {/* Description */}
       <div>
         <label
           htmlFor="description"
@@ -103,13 +140,14 @@ export default function IssueForm({
         <textarea
           id="description"
           value={form.description}
-          onChange={(e) => updateField("description", e.target.value)}
+          onChange={handleChange("description")}
           rows={4}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-y"
-          placeholder="Describe the issue..."
+          className={inputClass + " resize-y"}
+          placeholder="Detailed description (optional)"
         />
       </div>
 
+      {/* Status + Priority row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label
@@ -121,15 +159,14 @@ export default function IssueForm({
           <select
             id="status"
             value={form.status}
-            onChange={(e) => updateField("status", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+            onChange={handleChange("status")}
+            className={inputClass + " bg-white"}
           >
             <option value="open">Open</option>
             <option value="in_progress">In Progress</option>
             <option value="closed">Closed</option>
           </select>
         </div>
-
         <div>
           <label
             htmlFor="priority"
@@ -140,8 +177,8 @@ export default function IssueForm({
           <select
             id="priority"
             value={form.priority}
-            onChange={(e) => updateField("priority", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+            onChange={handleChange("priority")}
+            className={inputClass + " bg-white"}
           >
             <option value="low">Low</option>
             <option value="medium">Medium</option>
@@ -150,6 +187,7 @@ export default function IssueForm({
         </div>
       </div>
 
+      {/* Assignee + Due Date row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label
@@ -162,12 +200,11 @@ export default function IssueForm({
             id="assignee"
             type="text"
             value={form.assignee}
-            onChange={(e) => updateField("assignee", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            placeholder="Assignee name"
+            onChange={handleChange("assignee")}
+            className={inputClass}
+            placeholder="Name or email"
           />
         </div>
-
         <div>
           <label
             htmlFor="dueDate"
@@ -179,20 +216,32 @@ export default function IssueForm({
             id="dueDate"
             type="date"
             value={form.dueDate}
-            onChange={(e) => updateField("dueDate", e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            onChange={handleChange("dueDate")}
+            className={inputClass}
           />
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-      >
-        {loading && <Spinner />}
-        {loading ? "Saving..." : submitLabel}
-      </button>
+      {/* Buttons */}
+      <div className="flex items-center gap-3 pt-2">
+        <button
+          type="submit"
+          disabled={loading}
+          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+        >
+          {loading && <Spinner />}
+          {submitLabel}
+        </button>
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300 rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
+        )}
+      </div>
     </form>
   );
 }

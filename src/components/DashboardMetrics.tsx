@@ -12,30 +12,43 @@ export default function DashboardMetrics({ metrics, loading }: Props) {
         {[...Array(4)].map((_, i) => (
           <div
             key={i}
-            className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 animate-pulse"
+            className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm animate-pulse"
           >
-            <div className="h-4 bg-gray-200 rounded w-20 mb-3" />
-            <div className="h-8 bg-gray-200 rounded w-16" />
+            <div className="h-4 bg-gray-200 rounded w-16 mb-3" />
+            <div className="h-8 bg-gray-200 rounded w-12" />
           </div>
         ))}
       </div>
     );
   }
 
-  const cards: { label: string; value: number; color: string }[] = [
-    {
-      label: "Total Issues",
-      value: metrics?.total ?? 0,
-      color: "text-gray-900",
-    },
-    { label: "Open", value: metrics?.open ?? 0, color: "text-blue-600" },
-    {
-      label: "In Progress",
-      value: metrics?.inProgress ?? 0,
-      color: "text-amber-600",
-    },
-    { label: "Closed", value: metrics?.closed ?? 0, color: "text-green-600" },
-  ];
+  const cards: { label: string; value: number; color: string; icon: string }[] =
+    [
+      {
+        label: "Total Issues",
+        value: metrics?.total ?? 0,
+        color: "text-gray-900",
+        icon: "📋",
+      },
+      {
+        label: "Open",
+        value: metrics?.open ?? 0,
+        color: "text-green-700",
+        icon: "🟢",
+      },
+      {
+        label: "In Progress",
+        value: metrics?.inProgress ?? 0,
+        color: "text-yellow-700",
+        icon: "🟡",
+      },
+      {
+        label: "Closed",
+        value: metrics?.closed ?? 0,
+        color: "text-gray-500",
+        icon: "✅",
+      },
+    ];
 
   return (
     <div>
@@ -43,18 +56,21 @@ export default function DashboardMetrics({ metrics, loading }: Props) {
         {cards.map((card) => (
           <div
             key={card.label}
-            className="bg-white p-6 rounded-xl shadow-sm border border-gray-200"
+            className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm"
           >
-            <p className="text-sm text-gray-500 mb-1">{card.label}</p>
-            <p className={`text-3xl font-bold ${card.color}`}>{card.value}</p>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg">{card.icon}</span>
+              <p className="text-sm text-gray-500">{card.label}</p>
+            </div>
+            <p className={`text-2xl font-bold ${card.color}`}>{card.value}</p>
           </div>
         ))}
       </div>
       {metrics && metrics.overdue > 0 && (
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
-          <p className="text-red-700 font-medium">
+        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-sm text-red-700 font-medium">
             ⚠️ {metrics.overdue} overdue{" "}
-            {metrics.overdue === 1 ? "issue" : "issues"}
+            {metrics.overdue === 1 ? "issue" : "issues"} — action needed
           </p>
         </div>
       )}

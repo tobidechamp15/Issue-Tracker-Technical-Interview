@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { withAuth } from "@/middleware";
+import { withAuth } from "@/lib/with-auth";
 import { getDashboardMetrics } from "@/services/issue.service";
 import { successResponse, errorResponse, AppError } from "@/lib/response";
 

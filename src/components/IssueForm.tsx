@@ -43,71 +43,63 @@ export default function IssueForm({
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   function validate(field: string, value: string): string {
-    switch (field) {
-      case "title":
-        if (!value.trim()) return "Title is required";
-        if (value.trim().length < 3)
-          return "Title must be at least 3 characters";
-        return "";
-      default:
-        return "";
+    if (field === "title") {
+      if (!value.trim()) return "Title is required";
+      if (value.trim().length < 3) return "Title must be at least 3 characters";
+      return "";
     }
+    return "";
   }
 
-  function handleChange(field: keyof IssueFormData) {
+  function hc(field: keyof IssueFormData) {
     return (
       e: ChangeEvent<
         HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
       >,
     ) => {
-      const value = e.target.value;
-      setForm((prev) => ({ ...prev, [field]: value }));
+      const v = e.target.value;
+      setForm((p) => ({ ...p, [field]: v }));
       if (touched[field]) {
-        const err = validate(field, value);
-        setErrors((prev) => {
-          const next = { ...prev };
-          if (err) next[field] = err;
-          else delete next[field];
-          return next;
+        const err = validate(field, v);
+        setErrors((p) => {
+          const n = { ...p };
+          if (err) n[field] = err;
+          else delete n[field];
+          return n;
         });
       }
     };
   }
 
-  function handleBlur(field: keyof IssueFormData) {
+  function hb(field: keyof IssueFormData) {
     return () => {
-      setTouched((prev) => ({ ...prev, [field]: true }));
+      setTouched((p) => ({ ...p, [field]: true }));
       const err = validate(field, form[field]);
-      setErrors((prev) => {
-        const next = { ...prev };
-        if (err) next[field] = err;
-        else delete next[field];
-        return next;
+      setErrors((p) => {
+        const n = { ...p };
+        if (err) n[field] = err;
+        else delete n[field];
+        return n;
       });
     };
   }
 
-  async function handleSubmit(e: FormEvent) {
+  async function hs(e: FormEvent) {
     e.preventDefault();
-
-    // Validate all fields
+    const te = validate("title", form.title);
     const newErrors: Record<string, string> = {};
-    const titleErr = validate("title", form.title);
-    if (titleErr) newErrors.title = titleErr;
+    if (te) newErrors.title = te;
     setErrors(newErrors);
     setTouched({ title: true });
-
     if (Object.keys(newErrors).length > 0) return;
     await onSubmit(form);
   }
 
-  const inputClass =
-    "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors";
-  const errorClass = "border-red-300 focus:ring-red-500 focus:border-red-500";
+  const ic =
+    "w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-      {/* Title */}
+    <form onSubmit={hs} className="space-y-4" noValidate>
       <div>
         <label
           htmlFor="title"
@@ -119,17 +111,15 @@ export default function IssueForm({
           id="title"
           type="text"
           value={form.title}
-          onChange={handleChange("title")}
-          onBlur={handleBlur("title")}
-          className={`${inputClass} ${errors.title ? errorClass : ""}`}
+          onChange={hc("title")}
+          onBlur={hb("title")}
+          className={`${ic} ${errors.title ? "border-red-300 focus:ring-red-500" : ""}`}
           placeholder="Brief summary of the issue"
         />
         {errors.title && (
           <p className="text-red-500 text-xs mt-1">{errors.title}</p>
         )}
       </div>
-
-      {/* Description */}
       <div>
         <label
           htmlFor="description"
@@ -140,14 +130,12 @@ export default function IssueForm({
         <textarea
           id="description"
           value={form.description}
-          onChange={handleChange("description")}
+          onChange={hc("description")}
           rows={4}
-          className={inputClass + " resize-y"}
+          className={ic + " resize-y"}
           placeholder="Detailed description (optional)"
         />
       </div>
-
-      {/* Status + Priority row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label
@@ -159,12 +147,12 @@ export default function IssueForm({
           <select
             id="status"
             value={form.status}
-            onChange={handleChange("status")}
-            className={inputClass + " bg-white"}
+            onChange={hc("status")}
+            className={ic + " bg-white"}
           >
             <option value="open">Open</option>
             <option value="in_progress">In Progress</option>
-            <option value="closed">Closed</option>
+            <option value="closed">Done</option>
           </select>
         </div>
         <div>
@@ -177,8 +165,8 @@ export default function IssueForm({
           <select
             id="priority"
             value={form.priority}
-            onChange={handleChange("priority")}
-            className={inputClass + " bg-white"}
+            onChange={hc("priority")}
+            className={ic + " bg-white"}
           >
             <option value="low">Low</option>
             <option value="medium">Medium</option>
@@ -186,8 +174,6 @@ export default function IssueForm({
           </select>
         </div>
       </div>
-
-      {/* Assignee + Due Date row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label
@@ -200,8 +186,8 @@ export default function IssueForm({
             id="assignee"
             type="text"
             value={form.assignee}
-            onChange={handleChange("assignee")}
-            className={inputClass}
+            onChange={hc("assignee")}
+            className={ic}
             placeholder="Name or email"
           />
         </div>
@@ -216,18 +202,16 @@ export default function IssueForm({
             id="dueDate"
             type="date"
             value={form.dueDate}
-            onChange={handleChange("dueDate")}
-            className={inputClass}
+            onChange={hc("dueDate")}
+            className={ic}
           />
         </div>
       </div>
-
-      {/* Buttons */}
       <div className="flex items-center gap-3 pt-2">
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+          className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
         >
           {loading && <Spinner />}
           {submitLabel}
@@ -236,7 +220,7 @@ export default function IssueForm({
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300 rounded-lg transition-colors"
+            className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-xl transition-colors"
           >
             Cancel
           </button>

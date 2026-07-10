@@ -4,8 +4,10 @@ import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import IssueForm, { type IssueFormData } from "@/components/IssueForm";
-import Badge, { statusColor, formatStatus } from "@/components/Badge";
-import { formatDate, isOverdue } from "@/lib/format";
+import StatusBadge from "@/components/StatusBadge";
+import PriorityIndicator from "@/components/PriorityIndicator";
+import Avatar from "@/components/Avatar";
+import { formatDate } from "@/lib/format";
 
 interface Issue {
   _id: string;
@@ -26,7 +28,6 @@ export default function IssueDetailPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
-
   const [issue, setIssue] = useState<Issue | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -36,7 +37,7 @@ export default function IssueDetailPage({
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
-    async function fetchIssue() {
+    (async () => {
       try {
         const res = await api.get<Issue>(`/api/issues/${id}`);
         setIssue(res.data);
@@ -49,8 +50,7 @@ export default function IssueDetailPage({
       } finally {
         setLoading(false);
       }
-    }
-    fetchIssue();
+    })();
   }, [id, router]);
 
   async function handleUpdate(data: IssueFormData) {
@@ -84,42 +84,36 @@ export default function IssueDetailPage({
     }
   }
 
-  if (loading) {
+  if (loading)
     return (
       <div className="max-w-2xl mx-auto px-4 py-8 animate-pulse">
         <div className="h-6 bg-gray-200 rounded w-48 mb-4" />
-        <div className="bg-white p-6 rounded-lg border border-gray-200 space-y-4">
+        <div className="bg-white p-6 rounded-xl border border-gray-100 space-y-4">
           <div className="h-5 bg-gray-200 rounded w-3/4" />
           <div className="h-16 bg-gray-200 rounded" />
         </div>
       </div>
     );
-  }
-
-  if (error && !issue) {
+  if (error && !issue)
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
           {error}
         </div>
       </div>
     );
-  }
-
   if (!issue) return null;
 
-  const overdue = isOverdue(issue.dueDate, issue.status);
-
-  if (editing) {
+  if (editing)
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <h1 className="text-base font-bold text-gray-900 mb-6">Edit Issue</h1>
+        <h1 className="text-xl font-bold text-gray-900 mb-6">Edit Issue</h1>
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
             {error}
           </div>
         )}
-        <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
           <IssueForm
             initialData={{
               title: issue.title,
@@ -139,37 +133,30 @@ export default function IssueDetailPage({
         </div>
       </div>
     );
-  }
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-base font-bold text-gray-900">{issue.title}</h1>
-          <div className="flex flex-wrap items-center gap-2 mt-2">
-            <Badge variant="status" value={issue.status} />
-            <Badge variant="priority" value={issue.priority} />
-            {overdue && <Badge variant="status" value="overdue" />}
+          <h1 className="text-xl font-bold text-gray-900">{issue.title}</h1>
+          <div className="flex items-center gap-3 mt-2">
+            <StatusBadge status={issue.status} />
+            <PriorityIndicator priority={issue.priority} />
           </div>
         </div>
         <button
           onClick={() => setEditing(true)}
-          className="px-4 py-2 border border-blue-300 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+          className="px-4 py-2 border border-indigo-200 text-indigo-700 text-sm font-medium rounded-xl hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
         >
           Edit
         </button>
       </div>
-
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
           {error}
         </div>
       )}
-
-      {/* Body */}
-      <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm space-y-6">
-        {/* Description */}
+      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-6">
         <div>
           <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
             Description
@@ -178,16 +165,17 @@ export default function IssueDetailPage({
             {issue.description || "No description provided."}
           </p>
         </div>
-
-        {/* Metadata grid */}
         <div className="grid grid-cols-2 gap-6 pt-4 border-t border-gray-100">
           <div>
             <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
               Assignee
             </h2>
-            <p className="text-sm text-gray-900">
-              {issue.assignee || "Unassigned"}
-            </p>
+            <div className="flex items-center gap-2 mt-1">
+              <Avatar name={issue.assignee} size="sm" />
+              <span className="text-sm text-gray-900">
+                {issue.assignee || "Unassigned"}
+              </span>
+            </div>
           </div>
           <div>
             <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
@@ -214,13 +202,11 @@ export default function IssueDetailPage({
             </p>
           </div>
         </div>
-
-        {/* Delete */}
         <div className="border-t border-gray-100 pt-4">
           {!confirmDelete ? (
             <button
               onClick={() => setConfirmDelete(true)}
-              className="px-4 py-2 border border-red-300 text-red-700 text-sm font-medium rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors"
+              className="px-4 py-2 border border-red-200 text-red-700 text-sm font-medium rounded-xl hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors"
             >
               Delete Issue
             </button>
@@ -232,13 +218,13 @@ export default function IssueDetailPage({
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 transition-colors"
+                className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 transition-colors"
               >
                 {deleting ? "Deleting..." : "Yes, delete"}
               </button>
               <button
                 onClick={() => setConfirmDelete(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-xl transition-colors"
               >
                 Cancel
               </button>

@@ -16,18 +16,17 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   function validate(field: string, value: string): string {
-    switch (field) {
-      case "email":
-        if (!value.trim()) return "Email is required";
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
-          return "Invalid email address";
-        return "";
-      case "password":
-        if (!value) return "Password is required";
-        return "";
-      default:
-        return "";
+    if (field === "email") {
+      if (!value.trim()) return "Email is required";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+        return "Invalid email address";
+      return "";
     }
+    if (field === "password") {
+      if (!value) return "Password is required";
+      return "";
+    }
+    return "";
   }
 
   function handleChange(field: string) {
@@ -38,10 +37,10 @@ export default function LoginPage() {
       if (touched[field]) {
         const err = validate(field, value);
         setErrors((prev) => {
-          const next = { ...prev };
-          if (err) next[field] = err;
-          else delete next[field];
-          return next;
+          const n = { ...prev };
+          if (err) n[field] = err;
+          else delete n[field];
+          return n;
         });
       }
     };
@@ -53,19 +52,19 @@ export default function LoginPage() {
       const val = field === "email" ? email : password;
       const err = validate(field, val);
       setErrors((prev) => {
-        const next = { ...prev };
-        if (err) next[field] = err;
-        else delete next[field];
-        return next;
+        const n = { ...prev };
+        if (err) n[field] = err;
+        else delete n[field];
+        return n;
       });
     };
   }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    const eErr = validate("email", email),
+      pErr = validate("password", password);
     const newErrors: Record<string, string> = {};
-    const eErr = validate("email", email);
-    const pErr = validate("password", password);
     if (eErr) newErrors.email = eErr;
     if (pErr) newErrors.password = pErr;
     setErrors(newErrors);
@@ -85,23 +84,23 @@ export default function LoginPage() {
   }
 
   const inputClass =
-    "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors hover:border-gray-400";
+    "w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors";
   const errorClass = "border-red-300 focus:ring-red-500 focus:border-red-500";
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-base font-bold text-center mb-8">Sign In</h1>
+        <h1 className="text-xl font-bold text-center mb-8">Sign In</h1>
 
         {serverError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
             {serverError}
           </div>
         )}
 
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm space-y-4"
+          className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-4"
           noValidate
         >
           <div>
@@ -124,7 +123,6 @@ export default function LoginPage() {
               <p className="text-red-500 text-xs mt-1">{errors.email}</p>
             )}
           </div>
-
           <div>
             <label
               htmlFor="password"
@@ -145,22 +143,20 @@ export default function LoginPage() {
               <p className="text-red-500 text-xs mt-1">{errors.password}</p>
             )}
           </div>
-
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            className="w-full py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
             {loading && <Spinner />}
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
-
         <p className="text-center text-sm text-gray-500 mt-4">
           No account?{" "}
           <Link
             href="/register"
-            className="text-blue-600 hover:text-blue-800 font-medium"
+            className="text-indigo-600 hover:text-indigo-800 font-medium"
           >
             Register
           </Link>

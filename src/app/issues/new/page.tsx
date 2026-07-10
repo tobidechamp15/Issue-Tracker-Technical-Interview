@@ -14,11 +14,10 @@ export default function NewIssuePage() {
     setLoading(true);
     setError("");
     try {
-      const payload = {
+      await api.post("/api/issues", {
         ...data,
         dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : null,
-      };
-      await api.post("/api/issues", payload);
+      });
       router.push("/issues");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create issue");
@@ -28,17 +27,13 @@ export default function NewIssuePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-base font-bold text-gray-900 mb-6">
-        Create New Issue
-      </h1>
-
+      <h1 className="text-xl font-bold text-gray-900 mb-6">Create New Issue</h1>
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
           {error}
         </div>
       )}
-
-      <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
         <IssueForm
           onSubmit={handleSubmit}
           submitLabel="Create Issue"

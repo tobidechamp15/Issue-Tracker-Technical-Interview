@@ -16,80 +16,75 @@ export default function RegisterPage() {
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function validate(field: string, value: string): string {
-    switch (field) {
-      case "name":
-        if (!value.trim()) return "Name is required";
-        if (value.trim().length < 2)
-          return "Name must be at least 2 characters";
-        return "";
-      case "email":
-        if (!value.trim()) return "Email is required";
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
-          return "Invalid email address";
-        return "";
-      case "password":
-        if (!value) return "Password is required";
-        if (value.length < 6) return "Password must be at least 6 characters";
-        return "";
-      default:
-        return "";
+  function validate(f: string, v: string): string {
+    if (f === "name") {
+      if (!v.trim()) return "Name is required";
+      if (v.trim().length < 2) return "Name must be at least 2 characters";
+      return "";
     }
+    if (f === "email") {
+      if (!v.trim()) return "Email is required";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return "Invalid email address";
+      return "";
+    }
+    if (f === "password") {
+      if (!v) return "Password is required";
+      if (v.length < 6) return "Password must be at least 6 characters";
+      return "";
+    }
+    return "";
   }
 
-  function getValue(field: string): string {
-    if (field === "name") return name;
-    if (field === "email") return email;
+  function gv(f: string): string {
+    if (f === "name") return name;
+    if (f === "email") return email;
     return password;
   }
-
-  function setValue(field: string, value: string) {
-    if (field === "name") setName(value);
-    else if (field === "email") setEmail(value);
-    else setPassword(value);
+  function sv(f: string, v: string) {
+    if (f === "name") setName(v);
+    else if (f === "email") setEmail(v);
+    else setPassword(v);
   }
 
-  function handleChange(field: string) {
+  function hc(f: string) {
     return (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setValue(field, value);
-      if (touched[field]) {
-        const err = validate(field, value);
-        setErrors((prev) => {
-          const next = { ...prev };
-          if (err) next[field] = err;
-          else delete next[field];
-          return next;
+      const v = e.target.value;
+      sv(f, v);
+      if (touched[f]) {
+        const err = validate(f, v);
+        setErrors((p) => {
+          const n = { ...p };
+          if (err) n[f] = err;
+          else delete n[f];
+          return n;
         });
       }
     };
   }
 
-  function handleBlur(field: string) {
+  function hb(f: string) {
     return () => {
-      setTouched((prev) => ({ ...prev, [field]: true }));
-      const err = validate(field, getValue(field));
-      setErrors((prev) => {
-        const next = { ...prev };
-        if (err) next[field] = err;
-        else delete next[field];
-        return next;
+      setTouched((p) => ({ ...p, [f]: true }));
+      const err = validate(f, gv(f));
+      setErrors((p) => {
+        const n = { ...p };
+        if (err) n[f] = err;
+        else delete n[f];
+        return n;
       });
     };
   }
 
-  async function handleSubmit(e: FormEvent) {
+  async function hs(e: FormEvent) {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
-    const fields = ["name", "email", "password"] as const;
-    for (const f of fields) {
-      const err = validate(f, getValue(f));
+    for (const f of ["name", "email", "password"] as const) {
+      const err = validate(f, gv(f));
       if (err) newErrors[f] = err;
     }
     setErrors(newErrors);
     setTouched({ name: true, email: true, password: true });
     if (Object.keys(newErrors).length > 0) return;
-
     setLoading(true);
     setServerError("");
     try {
@@ -104,104 +99,73 @@ export default function RegisterPage() {
     }
   }
 
-  const inputClass =
-    "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors hover:border-gray-400";
-  const errorClass = "border-red-300 focus:ring-red-500 focus:border-red-500";
+  const ic =
+    "w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors";
+  const ec = "border-red-300 focus:ring-red-500 focus:border-red-500";
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-base font-bold text-center mb-8">Create Account</h1>
-
+        <h1 className="text-xl font-bold text-center mb-8">Create Account</h1>
         {serverError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
             {serverError}
           </div>
         )}
-
         <form
-          onSubmit={handleSubmit}
-          className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm space-y-4"
+          onSubmit={hs}
+          className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-4"
           noValidate
         >
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={handleChange("name")}
-              onBlur={handleBlur("name")}
-              className={`${inputClass} ${errors.name ? errorClass : ""}`}
-              placeholder="Your name"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-xs mt-1">{errors.name}</p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Email <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={handleChange("email")}
-              onBlur={handleBlur("email")}
-              className={`${inputClass} ${errors.email ? errorClass : ""}`}
-              placeholder="you@example.com"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Password <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={handleChange("password")}
-              onBlur={handleBlur("password")}
-              className={`${inputClass} ${errors.password ? errorClass : ""}`}
-              placeholder="Min 6 characters"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-            )}
-          </div>
-
+          {["name", "email", "password"].map((f) => (
+            <div key={f}>
+              <label
+                htmlFor={f}
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                {f === "name" ? "Name" : f === "email" ? "Email" : "Password"}{" "}
+                <span className="text-red-500">*</span>
+              </label>
+              <input
+                id={f}
+                type={
+                  f === "password"
+                    ? "password"
+                    : f === "email"
+                      ? "email"
+                      : "text"
+                }
+                value={gv(f)}
+                onChange={hc(f)}
+                onBlur={hb(f)}
+                className={`${ic} ${errors[f] ? ec : ""}`}
+                placeholder={
+                  f === "name"
+                    ? "Your name"
+                    : f === "email"
+                      ? "you@example.com"
+                      : "Min 6 characters"
+                }
+              />
+              {errors[f] && (
+                <p className="text-red-500 text-xs mt-1">{errors[f]}</p>
+              )}
+            </div>
+          ))}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            className="w-full py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
             {loading && <Spinner />}
             {loading ? "Creating account..." : "Create Account"}
           </button>
         </form>
-
         <p className="text-center text-sm text-gray-500 mt-4">
           Already registered?{" "}
           <Link
             href="/login"
-            className="text-blue-600 hover:text-blue-800 font-medium"
+            className="text-indigo-600 hover:text-indigo-800 font-medium"
           >
             Sign in
           </Link>

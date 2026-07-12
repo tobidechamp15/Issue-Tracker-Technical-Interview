@@ -35,7 +35,7 @@ export function withAuth(
 
       const payload = verifyToken(token);
       return handler(request, routeContext, payload);
-    } catch (error) {
+    } catch {
       return NextResponse.json(
         {
           success: false,

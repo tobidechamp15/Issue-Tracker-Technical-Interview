@@ -99,29 +99,21 @@ export default function RegisterPage() {
     }
   }
 
-  const ic =
-    "w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors";
-  const ec = "border-red-300 focus:ring-red-500 focus:border-red-500";
-
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <h1 className="text-xl font-bold text-center mb-8">Create Account</h1>
         {serverError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
             {serverError}
           </div>
         )}
-        <form
-          onSubmit={hs}
-          className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-4"
-          noValidate
-        >
+        <form onSubmit={hs} className="card p-6 space-y-4" noValidate>
           {["name", "email", "password"].map((f) => (
             <div key={f}>
               <label
                 htmlFor={f}
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-secondary mb-1"
               >
                 {f === "name" ? "Name" : f === "email" ? "Email" : "Password"}{" "}
                 <span className="text-red-500">*</span>
@@ -138,7 +130,7 @@ export default function RegisterPage() {
                 value={gv(f)}
                 onChange={hc(f)}
                 onBlur={hb(f)}
-                className={`${ic} ${errors[f] ? ec : ""}`}
+                className={`input-field ${errors[f] ? "input-error" : ""}`}
                 placeholder={
                   f === "name"
                     ? "Your name"
@@ -155,17 +147,17 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            className="btn-primary w-full gap-2"
           >
             {loading && <Spinner />}
             {loading ? "Creating account..." : "Create Account"}
           </button>
         </form>
-        <p className="text-center text-sm text-gray-500 mt-4">
+        <p className="text-center text-sm text-muted mt-4">
           Already registered?{" "}
           <Link
             href="/login"
-            className="text-indigo-600 hover:text-indigo-800 font-medium"
+            className="text-blue-600 hover:text-blue-800 font-medium"
           >
             Sign in
           </Link>

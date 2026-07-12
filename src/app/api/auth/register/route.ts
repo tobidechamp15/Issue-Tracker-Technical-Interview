@@ -7,8 +7,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validate input with Zod
-    const parsed = registerSchema.safeParse(body);
+     const parsed = registerSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
         {
@@ -27,11 +26,9 @@ export async function POST(request: NextRequest) {
 
     const { user } = await registerUser(name, email, password);
 
-    // Sign JWT
-    const token = signToken({ userId: user._id.toString(), email: user.email });
+     const token = signToken({ userId: user._id.toString(), email: user.email });
 
-    // Set httpOnly cookie
-    const response = NextResponse.json(
+     const response = NextResponse.json(
       {
         success: true,
         data: { user },
@@ -44,7 +41,7 @@ export async function POST(request: NextRequest) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24, // 24 hours
+      maxAge: 60 * 60 * 24, 
     });
 
     return response;

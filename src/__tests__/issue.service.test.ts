@@ -10,7 +10,7 @@ const { MockObjectId } = vi.hoisted(() => {
     toString() {
       return this.id;
     }
-    static isValid(_id?: string) {
+    static isValid() {
       return true;
     }
   }

@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, type ChangeEvent, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useState, type ChangeEvent, type FormEvent, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Link from "next/link";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/dashboard";
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -75,7 +77,7 @@ export default function LoginPage() {
     setServerError("");
     try {
       await login(email, password);
-      router.push("/dashboard");
+      router.push(redirectTo);
     } catch (err) {
       setServerError(err instanceof Error ? err.message : "Login failed");
     } finally {
@@ -83,30 +85,22 @@ export default function LoginPage() {
     }
   }
 
-  const inputClass =
-    "w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors";
-  const errorClass = "border-red-300 focus:ring-red-500 focus:border-red-500";
-
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <h1 className="text-xl font-bold text-center mb-8">Sign In</h1>
 
         {serverError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
             {serverError}
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-4"
-          noValidate
-        >
+        <form onSubmit={handleSubmit} className="card p-6 space-y-4" noValidate>
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-secondary mb-1"
             >
               Email <span className="text-red-500">*</span>
             </label>
@@ -116,7 +110,7 @@ export default function LoginPage() {
               value={email}
               onChange={handleChange("email")}
               onBlur={handleBlur("email")}
-              className={`${inputClass} ${errors.email ? errorClass : ""}`}
+              className={`input-field ${errors.email ? "input-error" : ""}`}
               placeholder="you@example.com"
             />
             {errors.email && (
@@ -126,7 +120,7 @@ export default function LoginPage() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-secondary mb-1"
             >
               Password <span className="text-red-500">*</span>
             </label>
@@ -136,8 +130,8 @@ export default function LoginPage() {
               value={password}
               onChange={handleChange("password")}
               onBlur={handleBlur("password")}
-              className={`${inputClass} ${errors.password ? errorClass : ""}`}
-              placeholder="••••••••"
+              className={`input-field ${errors.password ? "input-error" : ""}`}
+              placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
             />
             {errors.password && (
               <p className="text-red-500 text-xs mt-1">{errors.password}</p>
@@ -146,17 +140,17 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            className="btn-primary w-full gap-2"
           >
             {loading && <Spinner />}
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
-        <p className="text-center text-sm text-gray-500 mt-4">
+        <p className="text-center text-sm text-muted mt-4">
           No account?{" "}
           <Link
             href="/register"
-            className="text-indigo-600 hover:text-indigo-800 font-medium"
+            className="text-blue-600 hover:text-blue-800 font-medium"
           >
             Register
           </Link>
@@ -184,5 +178,13 @@ function Spinner() {
         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
       />
     </svg>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }

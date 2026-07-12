@@ -4,8 +4,8 @@ import {
   createContext,
   useContext,
   useState,
-  useEffect,
   useCallback,
+  useEffect,
   type ReactNode,
 } from "react";
 import { api } from "@/lib/api";
@@ -31,13 +31,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Check for existing session on mount
-  useEffect(() => {
-    // We can't directly read httpOnly cookies from JS,
-    // so we make a lightweight request to verify the session.
-    // For now, just set loading to false — the first API call
-    // to a protected route will handle auth state naturally.
-    setLoading(false);
+   useEffect(() => {
+    async function checkSession() {
+      try {
+        const res = await api.get<{ user: User }>("/api/auth/me");
+        setUser(res.data.user);
+      } catch {
+         setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+    checkSession();
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
@@ -61,9 +66,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const logout = useCallback(async () => {
-    // Clear the httpOnly cookie by setting an expired cookie
     await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
     setUser(null);
+    window.location.href = "/";
   }, []);
 
   return (

@@ -22,7 +22,7 @@ async function request<T>(
   options?: RequestInit,
 ): Promise<ApiResponse<T>> {
   const res = await fetch(url, {
-    credentials: "include", // send httpOnly cookie
+    credentials: "include",  
     headers: {
       "Content-Type": "application/json",
       ...options?.headers,

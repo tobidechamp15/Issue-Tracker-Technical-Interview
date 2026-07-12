@@ -32,8 +32,7 @@ export async function registerUser(
 ): Promise<{ user: UserResponse }> {
   await connectDB();
 
-  // Check for existing user
-  const existingUser = await User.findOne({ email });
+   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new DuplicateEmailError(email);
   }
@@ -55,8 +54,7 @@ export async function loginUser(
 ): Promise<{ user: UserResponse }> {
   await connectDB();
 
-  // Explicitly select passwordHash since it's excluded by default
-  const user = await User.findOne({ email }).select("+passwordHash");
+   const user = await User.findOne({ email }).select("+passwordHash");
   if (!user) {
     throw new InvalidCredentialsError();
   }
@@ -69,12 +67,22 @@ export async function loginUser(
   return { user: toUserResponse(user) };
 }
 
-// Custom error classes for predictable error handling
-export class DuplicateEmailError extends Error {
+ export class DuplicateEmailError extends Error {
   constructor(email: string) {
     super(`User with email "${email}" already exists`);
     this.name = "DuplicateEmailError";
   }
+}
+
+export async function getUserById(
+  userId: string,
+): Promise<UserResponse | null> {
+  await connectDB();
+
+  const user = await User.findById(userId);
+  if (!user) return null;
+
+  return toUserResponse(user);
 }
 
 export class InvalidCredentialsError extends Error {

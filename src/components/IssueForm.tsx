@@ -95,15 +95,12 @@ export default function IssueForm({
     await onSubmit(form);
   }
 
-  const ic =
-    "w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors";
-
   return (
     <form onSubmit={hs} className="space-y-4" noValidate>
       <div>
         <label
           htmlFor="title"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-secondary mb-1"
         >
           Title <span className="text-red-500">*</span>
         </label>
@@ -113,7 +110,7 @@ export default function IssueForm({
           value={form.title}
           onChange={hc("title")}
           onBlur={hb("title")}
-          className={`${ic} ${errors.title ? "border-red-300 focus:ring-red-500" : ""}`}
+          className={`input-field ${errors.title ? "input-error" : ""}`}
           placeholder="Brief summary of the issue"
         />
         {errors.title && (
@@ -123,7 +120,7 @@ export default function IssueForm({
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-secondary mb-1"
         >
           Description
         </label>
@@ -132,7 +129,7 @@ export default function IssueForm({
           value={form.description}
           onChange={hc("description")}
           rows={4}
-          className={ic + " resize-y"}
+          className="input-field resize-y"
           placeholder="Detailed description (optional)"
         />
       </div>
@@ -140,7 +137,7 @@ export default function IssueForm({
         <div>
           <label
             htmlFor="status"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             Status
           </label>
@@ -148,7 +145,7 @@ export default function IssueForm({
             id="status"
             value={form.status}
             onChange={hc("status")}
-            className={ic + " bg-white"}
+            className="input-field"
           >
             <option value="open">Open</option>
             <option value="in_progress">In Progress</option>
@@ -158,7 +155,7 @@ export default function IssueForm({
         <div>
           <label
             htmlFor="priority"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             Priority
           </label>
@@ -166,7 +163,7 @@ export default function IssueForm({
             id="priority"
             value={form.priority}
             onChange={hc("priority")}
-            className={ic + " bg-white"}
+            className="input-field"
           >
             <option value="low">Low</option>
             <option value="medium">Medium</option>
@@ -178,7 +175,7 @@ export default function IssueForm({
         <div>
           <label
             htmlFor="assignee"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             Assignee
           </label>
@@ -187,14 +184,14 @@ export default function IssueForm({
             type="text"
             value={form.assignee}
             onChange={hc("assignee")}
-            className={ic}
+            className="input-field"
             placeholder="Name or email"
           />
         </div>
         <div>
           <label
             htmlFor="dueDate"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             Due Date
           </label>
@@ -203,25 +200,17 @@ export default function IssueForm({
             type="date"
             value={form.dueDate}
             onChange={hc("dueDate")}
-            className={ic}
+            className="input-field"
           />
         </div>
       </div>
       <div className="flex items-center gap-3 pt-2">
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
-        >
+        <button type="submit" disabled={loading} className="btn-primary gap-2">
           {loading && <Spinner />}
           {submitLabel}
         </button>
         {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-xl transition-colors"
-          >
+          <button type="button" onClick={onCancel} className="btn-ghost">
             Cancel
           </button>
         )}

@@ -1,4 +1,3 @@
-import { NextRequest } from "next/server";
 import { withAuth } from "@/lib/with-auth";
 import {
   getIssueById,

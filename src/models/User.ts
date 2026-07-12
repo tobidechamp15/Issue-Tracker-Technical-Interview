@@ -26,7 +26,7 @@ const UserSchema = new Schema<IUser>(
     passwordHash: {
       type: String,
       required: true,
-      select: false, // Never returned in queries by default
+      select: false,
     },
   },
   {
@@ -34,8 +34,7 @@ const UserSchema = new Schema<IUser>(
   },
 );
 
-// Unique index on email
-UserSchema.index({ email: 1 }, { unique: true });
+ UserSchema.index({ email: 1 }, { unique: true });
 
 const User: Model<IUser> =
   mongoose.models.User || mongoose.model<IUser>("User", UserSchema);

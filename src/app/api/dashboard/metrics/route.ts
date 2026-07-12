@@ -1,11 +1,13 @@
-import { NextRequest } from "next/server";
 import { withAuth } from "@/lib/with-auth";
 import { getDashboardMetrics } from "@/services/issue.service";
 import { successResponse, errorResponse, AppError } from "@/lib/response";
 
-export const GET = withAuth(async (_request, _context, user) => {
+export const GET = withAuth(async (request, _context, user) => {
   try {
-    const metrics = await getDashboardMetrics(user);
+    const url = new URL(request.url);
+    const range = url.searchParams.get("range");
+    const rangeNum = range ? Number(range) : undefined;
+    const metrics = await getDashboardMetrics(user, rangeNum);
     return successResponse(metrics);
   } catch (error) {
     if (error instanceof AppError) {

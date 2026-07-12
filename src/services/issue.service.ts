@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { connectDB } from "@/lib/db";
-import Issue, { IIssue, IssueStatus, IssuePriority } from "@/models/Issue";
+import Issue, { IIssue } from "@/models/Issue";
 import {
   CreateIssueInput,
   UpdateIssueInput,
@@ -9,7 +9,7 @@ import {
 import { JWTPayload } from "@/lib/auth";
 import { AppError } from "@/lib/response";
 
-// ---- Create ----
+
 
 export async function createIssue(
   input: CreateIssueInput,
@@ -26,8 +26,7 @@ export async function createIssue(
   return issue;
 }
 
-// ---- List with search, filter, sort, pagination ----
-
+ 
 interface ListIssuesResult {
   issues: IIssue[];
   total: number;
@@ -42,10 +41,9 @@ export async function getIssues(
 ): Promise<ListIssuesResult> {
   await connectDB();
 
-  const { search, status, priority, sort, page, limit } = query;
+  const { search, status, priority, sort, page, limit, range } = query;
 
-  // Build filter
-  const filter: Record<string, unknown> = {
+   const filter: Record<string, unknown> = {
     createdBy: new mongoose.Types.ObjectId(user.userId),
   };
 
@@ -54,9 +52,12 @@ export async function getIssues(
   if (search) {
     filter.$text = { $search: search };
   }
+  if (range) {
+    const since = new Date(Date.now() - range * 86_400_000);
+    filter.createdAt = { $gte: since };
+  }
 
-  // Build sort
-  const sortOption: Record<string, 1 | -1> =
+   const sortOption: Record<string, 1 | -1> =
     sort === "oldest" ? { createdAt: 1 } : { createdAt: -1 };
 
   const skip = (page - 1) * limit;
@@ -75,8 +76,7 @@ export async function getIssues(
   };
 }
 
-// ---- Get by ID ----
-
+ 
 export async function getIssueById(
   id: string,
   user: JWTPayload,
@@ -99,8 +99,7 @@ export async function getIssueById(
   return issue as unknown as IIssue;
 }
 
-// ---- Update ----
-
+ 
 export async function updateIssue(
   id: string,
   input: UpdateIssueInput,
@@ -130,8 +129,7 @@ export async function updateIssue(
   return issue as unknown as IIssue;
 }
 
-// ---- Delete ----
-
+ 
 export async function deleteIssue(id: string, user: JWTPayload): Promise<void> {
   await connectDB();
 
@@ -149,8 +147,7 @@ export async function deleteIssue(id: string, user: JWTPayload): Promise<void> {
   }
 }
 
-// ---- Dashboard Metrics ----
-
+ 
 export interface DashboardMetrics {
   total: number;
   open: number;
@@ -161,14 +158,21 @@ export interface DashboardMetrics {
 
 export async function getDashboardMetrics(
   user: JWTPayload,
+  range?: number,
 ): Promise<DashboardMetrics> {
   await connectDB();
 
   const userId = new mongoose.Types.ObjectId(user.userId);
   const now = new Date();
 
+  const matchFilter: Record<string, unknown> = { createdBy: userId };
+  if (range) {
+    const since = new Date(Date.now() - range * 86_400_000);
+    matchFilter.createdAt = { $gte: since };
+  }
+
   const [result] = await Issue.aggregate([
-    { $match: { createdBy: userId } },
+    { $match: matchFilter },
     {
       $facet: {
         total: [{ $count: "count" }],

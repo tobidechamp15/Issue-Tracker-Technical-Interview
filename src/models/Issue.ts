@@ -55,24 +55,19 @@ const IssueSchema = new Schema<IIssue>(
     },
   },
   {
-    timestamps: true, // createdAt + updatedAt
+    timestamps: true,
   },
 );
 
-// Compound index: most common filter combination (status + priority)
-IssueSchema.index({ status: 1, priority: 1 });
+ IssueSchema.index({ status: 1, priority: 1 });
 
-// Text index on title for search
-IssueSchema.index({ title: "text" });
+ IssueSchema.index({ title: "text" });
 
-// Index on dueDate for overdue queries
-IssueSchema.index({ dueDate: 1 });
+ IssueSchema.index({ dueDate: 1 });
 
-// Index on createdAt for sort (newest/oldest)
-IssueSchema.index({ createdAt: -1 });
+ IssueSchema.index({ createdAt: -1 });
 
-// Index on createdBy for user-specific queries
-IssueSchema.index({ createdBy: 1 });
+ IssueSchema.index({ createdBy: 1 });
 
 const Issue: Model<IIssue> =
   mongoose.models.Issue || mongoose.model<IIssue>("Issue", IssueSchema);

@@ -6,9 +6,8 @@ if (!MONGODB_URI) {
   throw new Error("MONGODB_URI environment variable is not defined");
 }
 
-// Cached connection for serverless — prevents connection-per-request
-declare global {
-  // eslint-disable-next-line no-var
+ declare global {
+   
   var mongooseCache: {
     conn: typeof mongoose | null;
     promise: Promise<typeof mongoose> | null;

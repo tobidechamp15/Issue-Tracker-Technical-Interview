@@ -27,13 +27,13 @@ export default function NewIssuePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-xl font-bold text-gray-900 mb-6">Create New Issue</h1>
+      <h1 className="text-xl font-bold text-default mb-6">Create New Issue</h1>
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
           {error}
         </div>
       )}
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+      <div className="card p-6">
         <IssueForm
           onSubmit={handleSubmit}
           submitLabel="Create Issue"

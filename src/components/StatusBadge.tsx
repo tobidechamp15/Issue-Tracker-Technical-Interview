@@ -5,20 +5,20 @@ const config: Record<
   { bg: string; text: string; icon: typeof AlertCircle; label: string }
 > = {
   open: {
-    bg: "bg-amber-50",
-    text: "text-amber-700",
+    bg: "bg-emerald-50",
+    text: "text-emerald-700",
     icon: AlertCircle,
     label: "Open",
   },
   in_progress: {
-    bg: "bg-blue-50",
-    text: "text-blue-700",
+    bg: "bg-amber-50",
+    text: "text-amber-700",
     icon: Clock,
     label: "In Progress",
   },
   closed: {
-    bg: "bg-emerald-50",
-    text: "text-emerald-700",
+    bg: "bg-gray-100",
+    text: "text-gray-500",
     icon: CheckCircle2,
     label: "Done",
   },
@@ -34,7 +34,7 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${c.bg} ${c.text}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${c.bg} ${c.text}`}
     >
       <Icon className="h-3 w-3" />
       {c.label}

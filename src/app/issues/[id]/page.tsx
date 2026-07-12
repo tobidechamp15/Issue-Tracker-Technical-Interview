@@ -87,17 +87,17 @@ export default function IssueDetailPage({
   if (loading)
     return (
       <div className="max-w-2xl mx-auto px-4 py-8 animate-pulse">
-        <div className="h-6 bg-gray-200 rounded w-48 mb-4" />
-        <div className="bg-white p-6 rounded-xl border border-gray-100 space-y-4">
-          <div className="h-5 bg-gray-200 rounded w-3/4" />
-          <div className="h-16 bg-gray-200 rounded" />
+        <div className="h-6 bg-surface-tertiary rounded w-48 mb-4" />
+        <div className="card p-6 space-y-4">
+          <div className="h-5 bg-surface-tertiary rounded w-3/4" />
+          <div className="h-16 bg-surface-tertiary rounded" />
         </div>
       </div>
     );
   if (error && !issue)
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
           {error}
         </div>
       </div>
@@ -107,13 +107,13 @@ export default function IssueDetailPage({
   if (editing)
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <h1 className="text-xl font-bold text-gray-900 mb-6">Edit Issue</h1>
+        <h1 className="text-xl font-bold text-default mb-6">Edit Issue</h1>
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
             {error}
           </div>
         )}
-        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+        <div className="card p-6">
           <IssueForm
             initialData={{
               title: issue.title,
@@ -135,96 +135,93 @@ export default function IssueDetailPage({
     );
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="max-w-360 mx-auto px-4 py-8">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">{issue.title}</h1>
+          <h1 className="text-xl font-bold text-default">{issue.title}</h1>
           <div className="flex items-center gap-3 mt-2">
             <StatusBadge status={issue.status} />
             <PriorityIndicator priority={issue.priority} />
           </div>
         </div>
-        <button
-          onClick={() => setEditing(true)}
-          className="px-4 py-2 border border-indigo-200 text-indigo-700 text-sm font-medium rounded-xl hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
-        >
+        <button onClick={() => setEditing(true)} className="btn-secondary">
           Edit
         </button>
       </div>
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
           {error}
         </div>
       )}
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-6">
+      <div className="card  space-y-6">
         <div>
-          <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+          <h2 className="text-xs font-medium text-muted uppercase tracking-wide mb-2">
             Description
           </h2>
-          <p className="text-sm text-gray-900 whitespace-pre-wrap leading-relaxed">
+          <p className="text-sm text-default whitespace-pre-wrap leading-relaxed">
             {issue.description || "No description provided."}
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-6 pt-4 border-t border-gray-100">
+        <div className="grid grid-cols-2 gap-6 pt-4 border-t border-default">
           <div>
-            <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+            <h2 className="text-xs font-medium text-muted uppercase tracking-wide mb-1">
               Assignee
             </h2>
             <div className="flex items-center gap-2 mt-1">
               <Avatar name={issue.assignee} size="sm" />
-              <span className="text-sm text-gray-900">
+              <span className="text-sm text-default">
                 {issue.assignee || "Unassigned"}
               </span>
             </div>
           </div>
           <div>
-            <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+            <h2 className="text-xs font-medium text-muted uppercase tracking-wide mb-1">
               Due Date
             </h2>
-            <p className="text-sm text-gray-900">
+            <p className="text-sm text-default">
               {formatDate(issue.dueDate, { includeYear: true })}
             </p>
           </div>
           <div>
-            <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+            <h2 className="text-xs font-medium text-muted uppercase tracking-wide mb-1">
               Created
             </h2>
-            <p className="text-sm text-gray-900">
+            <p className="text-sm text-default">
               {formatDate(issue.createdAt, { includeYear: true })}
             </p>
           </div>
           <div>
-            <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+            <h2 className="text-xs font-medium text-muted uppercase tracking-wide mb-1">
               Updated
             </h2>
-            <p className="text-sm text-gray-900">
+            <p className="text-sm text-default">
               {formatDate(issue.updatedAt, { includeYear: true })}
             </p>
           </div>
         </div>
-        <div className="border-t border-gray-100 pt-4">
+        <div className="border-t border-default pt-4">
           {!confirmDelete ? (
             <button
               onClick={() => setConfirmDelete(true)}
-              className="px-4 py-2 border border-red-200 text-red-700 text-sm font-medium rounded-xl hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors"
+              className="px-4 py-2 border border-red-200 text-red-700 text-sm font-medium rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors active:scale-[0.98]"
             >
               Delete Issue
             </button>
           ) : (
             <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-muted">
                 Delete this issue permanently?
               </span>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-xl hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 transition-colors"
+                className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 transition-colors active:scale-[0.98]"
               >
                 {deleting ? "Deleting..." : "Yes, delete"}
               </button>
               <button
                 onClick={() => setConfirmDelete(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-xl transition-colors"
+                className="btn-ghost"
               >
                 Cancel
               </button>

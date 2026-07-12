@@ -6,7 +6,7 @@ const config: Record<
 > = {
   high: { icon: AlertTriangle, text: "text-red-600", label: "High" },
   medium: { icon: ArrowUp, text: "text-amber-600", label: "Medium" },
-  low: { icon: Minus, text: "text-gray-500", label: "Low" },
+  low: { icon: Minus, text: "text-gray-400", label: "Low" },
 };
 
 interface PriorityIndicatorProps {

@@ -74,12 +74,12 @@ This application allows users to:
 | POST   | `/api/auth/register`     | —    | Register new user, returns JWT in httpOnly cookie                              |
 | POST   | `/api/auth/login`        | —    | Login, returns JWT in httpOnly cookie                                          |
 | POST   | `/api/auth/logout`       | —    | Clears auth cookie                                                             |
-| GET    | `/api/issues`            | ✅   | List issues (`?search=&status=&priority=&sort=newest\|oldest&page=1&limit=10`) |
-| GET    | `/api/issues/:id`        | ✅   | Get single issue                                                               |
-| POST   | `/api/issues`            | ✅   | Create issue (Zod-validated body)                                              |
-| PUT    | `/api/issues/:id`        | ✅   | Update issue (partial update allowed)                                          |
-| DELETE | `/api/issues/:id`        | ✅   | Delete issue                                                                   |
-| GET    | `/api/dashboard/metrics` | ✅   | Dashboard metrics (single $facet aggregation)                                  |
+| GET    | `/api/issues`            | -    | List issues (`?search=&status=&priority=&sort=newest\|oldest&page=1&limit=10`) |
+| GET    | `/api/issues/:id`        | -    | Get single issue                                                               |
+| POST   | `/api/issues`            | -    | Create issue (Zod-validated body)                                              |
+| PUT    | `/api/issues/:id`        | -    | Update issue (partial update allowed)                                          |
+| DELETE | `/api/issues/:id`        | -    | Delete issue                                                                   |
+| GET    | `/api/dashboard/metrics` | -    | Dashboard metrics (single $facet aggregation)                                  |
 
 ### Response Envelope
 

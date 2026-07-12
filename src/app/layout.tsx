@@ -11,8 +11,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Issue Tracker",
-  description: "Mini Issue Tracking System",
+  title: {
+    template: "%s | IssueTracker",
+    default: "IssueTracker — Project Issue Management",
+  },
+  description:
+    "Create, assign, prioritize, and resolve issues with a clean dashboard. Built for teams that want to move fast without losing track.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -21,8 +28,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-gray-50 font-sans">
+    <html
+      lang="en"
+      className={`${inter.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const saved = localStorage.getItem('theme');
+                const isDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                if (isDark) document.documentElement.classList.add('dark');
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body
+        className="min-h-full flex flex-col font-sans"
+        style={{ backgroundColor: "var(--color-background)", color: "var(--color-foreground)" }}
+        suppressHydrationWarning
+      >
         <AuthProvider>
           <AppShell>{children}</AppShell>
         </AuthProvider>

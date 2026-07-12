@@ -18,13 +18,10 @@ export default function IssueCard({ issue }: IssueCardProps) {
   const overdue = isOverdue(issue.dueDate, issue.status);
 
   return (
-    <Link
-      href={`/issues/${issue._id}`}
-      className="block bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:border-blue-300 hover:shadow focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
-    >
+    <Link href={`/issues/${issue._id}`} className="card-hover block p-5">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <h3 className="text-base font-semibold text-gray-900 truncate">
+          <h3 className="text-sm font-semibold text-default truncate">
             {issue.title}
           </h3>
           <div className="flex flex-wrap items-center gap-2 mt-2">
@@ -35,12 +32,10 @@ export default function IssueCard({ issue }: IssueCardProps) {
         </div>
         <div className="text-right shrink-0 space-y-1">
           {issue.assignee && (
-            <p className="text-xs text-gray-500">👤 {issue.assignee}</p>
+            <p className="text-xs text-muted">{issue.assignee}</p>
           )}
-          <p className="text-xs text-gray-400">
-            Due {formatDate(issue.dueDate)}
-          </p>
-          <p className="text-xs text-gray-400">{formatDate(issue.createdAt)}</p>
+          <p className="text-xs text-muted">Due {formatDate(issue.dueDate)}</p>
+          <p className="text-xs text-muted">{formatDate(issue.createdAt)}</p>
         </div>
       </div>
     </Link>

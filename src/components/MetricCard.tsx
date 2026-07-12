@@ -31,12 +31,12 @@ export default function MetricCard({
       {trend && (
         <div className="flex items-center gap-1 mt-3">
           {trend.direction === "up" ? (
-            <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />
+            <TrendingUp className="h-3.5 w-3.5 text-emerald-500 dark:text-emerald-400" />
           ) : (
-            <TrendingDown className="h-3.5 w-3.5 text-red-500" />
+            <TrendingDown className="h-3.5 w-3.5 text-red-500 dark:text-red-400" />
           )}
           <span
-            className={`text-xs font-medium ${trend.direction === "up" ? "text-emerald-600" : "text-red-600"}`}
+            className={`text-xs font-medium ${trend.direction === "up" ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}
           >
             {trend.percentage}%
           </span>

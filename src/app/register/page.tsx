@@ -104,7 +104,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm">
         <h1 className="text-xl font-bold text-center mb-8">Create Account</h1>
         {serverError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+          <div className="mb-4 p-3 msg-error border rounded-lg text-sm">
             {serverError}
           </div>
         )}
@@ -116,7 +116,7 @@ export default function RegisterPage() {
                 className="block text-sm font-medium text-secondary mb-1"
               >
                 {f === "name" ? "Name" : f === "email" ? "Email" : "Password"}{" "}
-                <span className="text-red-500">*</span>
+                <span className="text-error-strong">*</span>
               </label>
               <input
                 id={f}
@@ -140,7 +140,7 @@ export default function RegisterPage() {
                 }
               />
               {errors[f] && (
-                <p className="text-red-500 text-xs mt-1">{errors[f]}</p>
+                <p className="text-error-strong text-xs mt-1">{errors[f]}</p>
               )}
             </div>
           ))}
@@ -157,7 +157,7 @@ export default function RegisterPage() {
           Already registered?{" "}
           <Link
             href="/login"
-            className="text-blue-600 hover:text-blue-800 font-medium"
+            className="text-primary font-medium hover:text-primary-hover transition-colors"
           >
             Sign in
           </Link>

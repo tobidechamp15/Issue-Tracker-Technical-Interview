@@ -2,11 +2,11 @@ import { AlertTriangle, ArrowUp, Minus } from "lucide-react";
 
 const config: Record<
   string,
-  { icon: typeof AlertTriangle; text: string; label: string }
+  { icon: typeof AlertTriangle; className: string; label: string }
 > = {
-  high: { icon: AlertTriangle, text: "text-red-600", label: "High" },
-  medium: { icon: ArrowUp, text: "text-amber-600", label: "Medium" },
-  low: { icon: Minus, text: "text-gray-400", label: "Low" },
+  high: { icon: AlertTriangle, className: "priority-high", label: "High" },
+  medium: { icon: ArrowUp, className: "priority-medium", label: "Medium" },
+  low: { icon: Minus, className: "priority-low", label: "Low" },
 };
 
 interface PriorityIndicatorProps {
@@ -21,7 +21,7 @@ export default function PriorityIndicator({
 
   return (
     <span
-      className={`inline-flex items-center gap-1 text-xs font-medium ${c.text}`}
+      className={`inline-flex items-center gap-1 text-xs font-medium ${c.className}`}
     >
       <Icon className="h-3.5 w-3.5" />
       {c.label}

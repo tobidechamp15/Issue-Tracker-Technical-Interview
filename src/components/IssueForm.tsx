@@ -102,7 +102,7 @@ export default function IssueForm({
           htmlFor="title"
           className="block text-sm font-medium text-secondary mb-1"
         >
-          Title <span className="text-red-500">*</span>
+          Title <span className="text-error-strong">*</span>
         </label>
         <input
           id="title"
@@ -114,7 +114,7 @@ export default function IssueForm({
           placeholder="Brief summary of the issue"
         />
         {errors.title && (
-          <p className="text-red-500 text-xs mt-1">{errors.title}</p>
+          <p className="text-error-strong text-xs mt-1">{errors.title}</p>
         )}
       </div>
       <div>

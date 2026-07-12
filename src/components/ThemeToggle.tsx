@@ -1,4 +1,4 @@
- "use client";
+"use client";
 import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
@@ -15,6 +15,19 @@ export function ThemeToggle() {
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);
+
+  // Listen for OS theme changes
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = (e: MediaQueryListEvent) => {
+      // Only auto-follow if user hasn't explicitly set a preference
+      if (!localStorage.getItem("theme")) {
+        setDark(e.matches);
+      }
+    };
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   const toggle = () => {
     const next = !dark;

@@ -112,8 +112,50 @@
   --color-warning-border: #fde68a;
 
   --color-error: #dc2626;
+  --color-error-strong: #dc2626;
   --color-error-bg: #fef2f2;
   --color-error-border: #fecaca;
+
+  /* Status badge colors */
+  --color-badge-open-bg: #f0fdf4;
+  --color-badge-open-text: #16a34a;
+  --color-badge-open-border: #bbf7d0;
+
+  --color-badge-progress-bg: #fffbeb;
+  --color-badge-progress-text: #d97706;
+  --color-badge-progress-border: #fde68a;
+
+  --color-badge-closed-bg: #f1f5f9;
+  --color-badge-closed-text: #64748b;
+  --color-badge-closed-border: #e2e8f0;
+
+  /* Priority colors */
+  --color-priority-high: #dc2626;
+  --color-priority-medium: #d97706;
+  --color-priority-low: #94a3b8;
+
+  /* Avatar colors (muted variants) */
+  --color-avatar-blue-bg: #dbeafe;
+  --color-avatar-blue-text: #1d4ed8;
+  --color-avatar-gray-bg: #f1f5f9;
+  --color-avatar-gray-text: #475569;
+  --color-avatar-amber-bg: #fef3c7;
+  --color-avatar-amber-text: #b45309;
+  --color-avatar-emerald-bg: #d1fae5;
+  --color-avatar-emerald-text: #047857;
+  --color-avatar-rose-bg: #ffe4e6;
+  --color-avatar-rose-text: #be123c;
+  --color-avatar-cyan-bg: #cffafe;
+  --color-avatar-cyan-text: #0e7490;
+
+  /* Feedback message containers */
+  --color-msg-error-bg: #fef2f2;
+  --color-msg-error-text: #dc2626;
+  --color-msg-error-border: #fecaca;
+
+  --color-msg-success-bg: #f0fdf4;
+  --color-msg-success-text: #16a34a;
+  --color-msg-success-border: #bbf7d0;
 
   --font-sans: var(
     --font-inter,
@@ -154,8 +196,50 @@
   --color-warning-border: #713f12;
 
   --color-error: #ef4444;
+  --color-error-strong: #ef4444;
   --color-error-bg: #1f0f0f;
   --color-error-border: #7f1d1d;
+
+  /* Status badge colors — dark */
+  --color-badge-open-bg: #052e16;
+  --color-badge-open-text: #22c55e;
+  --color-badge-open-border: #166534;
+
+  --color-badge-progress-bg: #1e1b0c;
+  --color-badge-progress-text: #f59e0b;
+  --color-badge-progress-border: #713f12;
+
+  --color-badge-closed-bg: #1e293b;
+  --color-badge-closed-text: #94a3b8;
+  --color-badge-closed-border: #334155;
+
+  /* Priority colors — dark */
+  --color-priority-high: #ef4444;
+  --color-priority-medium: #f59e0b;
+  --color-priority-low: #64748b;
+
+  /* Avatar colors — dark */
+  --color-avatar-blue-bg: #1e3a5f;
+  --color-avatar-blue-text: #93c5fd;
+  --color-avatar-gray-bg: #1e293b;
+  --color-avatar-gray-text: #cbd5e1;
+  --color-avatar-amber-bg: #3b2f0c;
+  --color-avatar-amber-text: #fcd34d;
+  --color-avatar-emerald-bg: #064e3b;
+  --color-avatar-emerald-text: #6ee7b7;
+  --color-avatar-rose-bg: #4c0519;
+  --color-avatar-rose-text: #fda4af;
+  --color-avatar-cyan-bg: #164e63;
+  --color-avatar-cyan-text: #67e8f9;
+
+  /* Feedback message containers — dark */
+  --color-msg-error-bg: #1f0f0f;
+  --color-msg-error-text: #ef4444;
+  --color-msg-error-border: #7f1d1d;
+
+  --color-msg-success-bg: #052e16;
+  --color-msg-success-text: #22c55e;
+  --color-msg-success-border: #166534;
 }
 
 @layer base {
@@ -748,6 +832,77 @@
     border-radius: 9999px;
     animation: pulse-subtle 1.5s ease-in-out infinite;
     aspect-ratio: 1 / 1;
+  }
+
+  /* ============================================================
+     Semantic theme-adaptive status / badge / avatar utilities
+     These use CSS custom properties defined in @theme & .dark
+     ============================================================ */
+
+  /* --- Status badges (Open / In Progress / Done) --- */
+  .badge-open {
+    background-color: var(--color-badge-open-bg);
+    color: var(--color-badge-open-text);
+    border-color: var(--color-badge-open-border);
+  }
+  .badge-progress {
+    background-color: var(--color-badge-progress-bg);
+    color: var(--color-badge-progress-text);
+    border-color: var(--color-badge-progress-border);
+  }
+  .badge-closed {
+    background-color: var(--color-badge-closed-bg);
+    color: var(--color-badge-closed-text);
+    border-color: var(--color-badge-closed-border);
+  }
+
+  /* --- Feedback message containers --- */
+  .msg-error {
+    background-color: var(--color-msg-error-bg);
+    color: var(--color-msg-error-text);
+    border-color: var(--color-msg-error-border);
+  }
+  .msg-success {
+    background-color: var(--color-msg-success-bg);
+    color: var(--color-msg-success-text);
+    border-color: var(--color-msg-success-border);
+  }
+
+  /* --- Avatar color variants --- */
+  .avatar-blue {
+    background-color: var(--color-avatar-blue-bg);
+    color: var(--color-avatar-blue-text);
+  }
+  .avatar-gray {
+    background-color: var(--color-avatar-gray-bg);
+    color: var(--color-avatar-gray-text);
+  }
+  .avatar-amber {
+    background-color: var(--color-avatar-amber-bg);
+    color: var(--color-avatar-amber-text);
+  }
+  .avatar-emerald {
+    background-color: var(--color-avatar-emerald-bg);
+    color: var(--color-avatar-emerald-text);
+  }
+  .avatar-rose {
+    background-color: var(--color-avatar-rose-bg);
+    color: var(--color-avatar-rose-text);
+  }
+  .avatar-cyan {
+    background-color: var(--color-avatar-cyan-bg);
+    color: var(--color-avatar-cyan-text);
+  }
+
+  /* --- Priority text colors --- */
+  .priority-high {
+    color: var(--color-priority-high);
+  }
+  .priority-medium {
+    color: var(--color-priority-medium);
+  }
+  .priority-low {
+    color: var(--color-priority-low);
   }
 
   /* Responsive overrides */

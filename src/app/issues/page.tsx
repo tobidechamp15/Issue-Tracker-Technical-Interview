@@ -54,14 +54,14 @@ export default function IssuesPage() {
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
 
-   const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Issue[]>([]);
   const [searching, setSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
 
-   useEffect(() => {
+  useEffect(() => {
     const params = new URLSearchParams();
     if (activeTab) params.set("status", activeTab);
     if (priority) params.set("priority", priority);
@@ -87,7 +87,7 @@ export default function IssuesPage() {
       });
   }, [activeTab, priority, sort, page, router]);
 
-   const handleSearch = useCallback((query: string) => {
+  const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -115,7 +115,7 @@ export default function IssuesPage() {
     }, 300);
   }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
         setShowDropdown(false);
@@ -125,7 +125,7 @@ export default function IssuesPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
@@ -142,7 +142,6 @@ export default function IssuesPage() {
 
   return (
     <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-default">Issues</h1>
@@ -163,7 +162,6 @@ export default function IssuesPage() {
           </Link>
         </div>
       </div>
-
 
       <div ref={searchRef} className="relative mb-6">
         {/* <div className="relative">
@@ -187,7 +185,6 @@ export default function IssuesPage() {
             </button>
           )}
         </div> */}
-
 
         {showDropdown && (
           <div className="absolute top-full left-0 right-0 mt-1 bg-default border border-default rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
@@ -224,7 +221,6 @@ export default function IssuesPage() {
         )}
       </div>
 
-
       {showFilters && (
         <div className="mb-6">
           <FilterBar
@@ -248,7 +244,6 @@ export default function IssuesPage() {
           />
         </div>
       )}
-
 
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div className="flex gap-2">
@@ -292,11 +287,10 @@ export default function IssuesPage() {
       </div>
 
       {error && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        <div className="mb-4 p-4 msg-error border rounded-lg text-sm">
           {error}
         </div>
       )}
-
 
       <div className="card overflow-hidden">
         {loading ? (
@@ -391,7 +385,6 @@ export default function IssuesPage() {
                 ))}
               </tbody>
             </table>
-
 
             <div className="flex items-center justify-between px-6 py-4 border-t border-default">
               <p className="text-sm text-muted">

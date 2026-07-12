@@ -109,10 +109,10 @@ export default function DashboardPage() {
   if (error) {
     return (
       <div className="max-w-360 mx-auto px-4 py-8">
-        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        <div className="p-4 msg-error border rounded-lg text-sm">
           {error}
           {error === "Authentication required" && (
-            <Link href="/login" className="ml-2 text-blue-600 underline">
+            <Link href="/login" className="ml-2 text-primary underline">
               Login
             </Link>
           )}
@@ -123,7 +123,7 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 py-8">
-       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-default">
             Dashboard Overview
@@ -148,7 +148,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-       {loading ? (
+      {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="card p-5 animate-pulse">
@@ -190,7 +190,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-
       <section className="mt-10">
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -202,7 +201,7 @@ export default function DashboardPage() {
           </div>
           <Link
             href="/issues"
-            className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-1 transition-colors"
+            className="text-sm font-medium text-primary hover:text-primary-hover transition-colors flex items-center gap-1"
           >
             View all
             <ChevronRight className="h-4 w-4" />
@@ -225,7 +224,7 @@ export default function DashboardPage() {
               ))}
             </div>
           ) : issuesError ? (
-            <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm m-4">
+            <div className="p-4 msg-error border rounded-lg text-sm m-4">
               {issuesError}
             </div>
           ) : recentIssues.length === 0 ? (
@@ -297,11 +296,10 @@ export default function DashboardPage() {
                 </tbody>
               </table>
 
-
               <div className="flex items-center justify-center px-6 py-4 border-t border-default">
                 <Link
                   href="/issues"
-                  className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                  className="text-sm font-medium text-primary hover:text-primary-hover transition-colors"
                 >
                   View all {issuesMeta?.total ?? 0} issues &rarr;
                 </Link>

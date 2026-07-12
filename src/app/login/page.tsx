@@ -91,7 +91,7 @@ function LoginForm() {
         <h1 className="text-xl font-bold text-center mb-8">Sign In</h1>
 
         {serverError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+          <div className="mb-4 p-3 msg-error border rounded-lg text-sm">
             {serverError}
           </div>
         )}
@@ -102,7 +102,7 @@ function LoginForm() {
               htmlFor="email"
               className="block text-sm font-medium text-secondary mb-1"
             >
-              Email <span className="text-red-500">*</span>
+              Email <span className="text-error-strong">*</span>
             </label>
             <input
               id="email"
@@ -114,7 +114,7 @@ function LoginForm() {
               placeholder="you@example.com"
             />
             {errors.email && (
-              <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+              <p className="text-error-strong text-xs mt-1">{errors.email}</p>
             )}
           </div>
           <div>
@@ -122,7 +122,7 @@ function LoginForm() {
               htmlFor="password"
               className="block text-sm font-medium text-secondary mb-1"
             >
-              Password <span className="text-red-500">*</span>
+              Password <span className="text-error-strong">*</span>
             </label>
             <input
               id="password"
@@ -131,10 +131,12 @@ function LoginForm() {
               onChange={handleChange("password")}
               onBlur={handleBlur("password")}
               className={`input-field ${errors.password ? "input-error" : ""}`}
-              placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+              placeholder="••••••••"
             />
             {errors.password && (
-              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+              <p className="text-error-strong text-xs mt-1">
+                {errors.password}
+              </p>
             )}
           </div>
           <button
@@ -150,7 +152,7 @@ function LoginForm() {
           No account?{" "}
           <Link
             href="/register"
-            className="text-blue-600 hover:text-blue-800 font-medium"
+            className="text-primary font-medium hover:text-primary-hover transition-colors"
           >
             Register
           </Link>

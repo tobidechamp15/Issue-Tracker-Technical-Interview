@@ -97,9 +97,7 @@ export default function IssueDetailPage({
   if (error && !issue)
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-          {error}
-        </div>
+        <div className="p-4 msg-error border rounded-lg text-sm">{error}</div>
       </div>
     );
   if (!issue) return null;
@@ -109,7 +107,7 @@ export default function IssueDetailPage({
       <div className="max-w-2xl mx-auto px-4 py-8">
         <h1 className="text-xl font-bold text-default mb-6">Edit Issue</h1>
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+          <div className="mb-4 p-3 msg-error border rounded-lg text-sm">
             {error}
           </div>
         )}
@@ -149,7 +147,7 @@ export default function IssueDetailPage({
         </button>
       </div>
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        <div className="mb-4 p-3 msg-error border rounded-lg text-sm">
           {error}
         </div>
       )}
@@ -203,7 +201,7 @@ export default function IssueDetailPage({
           {!confirmDelete ? (
             <button
               onClick={() => setConfirmDelete(true)}
-              className="px-4 py-2 border border-red-200 text-red-700 text-sm font-medium rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors active:scale-[0.98]"
+              className="px-4 py-2 border border-msg-error-border text-msg-error-text text-sm font-medium rounded-lg hover:bg-msg-error-bg focus:outline-none focus:ring-2 focus:ring-error transition-colors active:scale-[0.98]"
             >
               Delete Issue
             </button>
@@ -215,7 +213,7 @@ export default function IssueDetailPage({
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 transition-colors active:scale-[0.98]"
+                className="px-4 py-2 bg-error text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2 disabled:opacity-50 transition-colors active:scale-[0.98]"
               >
                 {deleting ? "Deleting..." : "Yes, delete"}
               </button>

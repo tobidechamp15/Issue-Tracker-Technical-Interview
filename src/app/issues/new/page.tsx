@@ -29,7 +29,7 @@ export default function NewIssuePage() {
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h1 className="text-xl font-bold text-default mb-6">Create New Issue</h1>
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        <div className="mb-4 p-3 msg-error border rounded-lg text-sm">
           {error}
         </div>
       )}

@@ -28,12 +28,12 @@ export default function DashboardMetrics({ metrics, loading }: Props) {
     {
       label: "Open",
       value: metrics?.open ?? 0,
-      color: "text-emerald-700",
+      color: "text-badge-open-text",
     },
     {
       label: "In Progress",
       value: metrics?.inProgress ?? 0,
-      color: "text-amber-700",
+      color: "text-badge-progress-text",
     },
     {
       label: "Closed",
@@ -53,8 +53,8 @@ export default function DashboardMetrics({ metrics, loading }: Props) {
         ))}
       </div>
       {metrics && metrics.overdue > 0 && (
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm text-red-700 font-medium">
+        <div className="mt-4 p-4 msg-error border rounded-lg">
+          <p className="text-sm font-medium">
             {metrics.overdue} overdue{" "}
             {metrics.overdue === 1 ? "issue" : "issues"} &mdash; action needed
           </p>

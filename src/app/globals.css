@@ -3,6 +3,101 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================
+   Explicit :root CSS custom properties
+   ⚠️ CRITICAL: These must be defined on :root directly (not just
+   in @theme inline) to ensure they're available via var() in all
+   environments — especially Next.js dev mode where @theme inline
+   processing can differ from production builds.
+   ============================================================ */
+:root {
+  /* Brand palette: terracotta primary, teal accent */
+  --color-primary: #b45309;
+  --color-primary-hover: #92400e;
+  --color-primary-ring: #f59e0b;
+  --color-primary-light: #fffbeb;
+
+  --color-accent: #0d9488;
+  --color-accent-hover: #0f766e;
+  --color-accent-light: #f0fdfa;
+
+  /* Neutrals */
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
+
+  --color-surface: #ffffff;
+  --color-surface-secondary: #f8fafc;
+  --color-surface-tertiary: #f1f5f9;
+
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  /* Feedback states */
+  --color-success: #16a34a;
+  --color-success-bg: #f0fdf4;
+  --color-success-border: #bbf7d0;
+
+  --color-warning: #d97706;
+  --color-warning-bg: #fffbeb;
+  --color-warning-border: #fde68a;
+
+  --color-error: #dc2626;
+  --color-error-strong: #dc2626;
+  --color-error-bg: #fef2f2;
+  --color-error-border: #fecaca;
+
+  /* Status badge colors */
+  --color-badge-open-bg: #f0fdf4;
+  --color-badge-open-text: #16a34a;
+  --color-badge-open-border: #bbf7d0;
+
+  --color-badge-progress-bg: #fffbeb;
+  --color-badge-progress-text: #d97706;
+  --color-badge-progress-border: #fde68a;
+
+  --color-badge-closed-bg: #f1f5f9;
+  --color-badge-closed-text: #64748b;
+  --color-badge-closed-border: #e2e8f0;
+
+  /* Priority colors */
+  --color-priority-high: #dc2626;
+  --color-priority-medium: #d97706;
+  --color-priority-low: #94a3b8;
+
+  /* Avatar colors (muted variants) */
+  --color-avatar-blue-bg: #dbeafe;
+  --color-avatar-blue-text: #1d4ed8;
+  --color-avatar-gray-bg: #f1f5f9;
+  --color-avatar-gray-text: #475569;
+  --color-avatar-amber-bg: #fef3c7;
+  --color-avatar-amber-text: #b45309;
+  --color-avatar-emerald-bg: #d1fae5;
+  --color-avatar-emerald-text: #047857;
+  --color-avatar-rose-bg: #ffe4e6;
+  --color-avatar-rose-text: #be123c;
+  --color-avatar-cyan-bg: #cffafe;
+  --color-avatar-cyan-text: #0e7490;
+
+  /* Feedback message containers */
+  --color-msg-error-bg: #fef2f2;
+  --color-msg-error-text: #dc2626;
+  --color-msg-error-border: #fecaca;
+
+  --color-msg-success-bg: #f0fdf4;
+  --color-msg-success-text: #16a34a;
+  --color-msg-success-border: #bbf7d0;
+
+  /* Fonts - duplicate from @theme inline for reliable var() access */
+  --font-sans: var(
+    --font-inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    sans-serif
+  );
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* ============================================================
    Semantic theme-adaptive utility classes
    These respond to .dark mode via CSS custom properties
    ============================================================ */
@@ -261,7 +356,6 @@
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
   }
 
   h1,

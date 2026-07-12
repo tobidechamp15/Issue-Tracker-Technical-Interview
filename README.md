@@ -194,6 +194,7 @@ The app uses a **dual-token strategy**: a short-lived access token (`token`, def
 - Skipped real-time updates (WebSockets) in favor of hardening core CRUD + auth given the time budget
 - Skipped email notifications and file attachments — these don't map to scored rubric categories
 - Used a single deployment unit (Next.js monolith) instead of separate frontend/backend repos
+- No rate limiting on auth routes (login/register/refresh) — acceptable for an MVP given bcrypt's inherent cost per attempt, but would add a fixed-window limiter (Redis-backed) before handling real traffic
 
 ## Future Improvements
 
